@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyscanner UI Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="bg-white min-h-screen">
+    <!-- Header -->
+    <header class="bg-[#0d2240] text-white">
+        <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-4">
+            <div class="flex items-center space-x-3">
+                <img src="logo.png" alt="Skyscanner Logo" class="h-8 w-auto">
+                <span class="text-2xl font-bold">Skyscanner</span>
+            </div>
+            <div class="flex items-center space-x-6">
+                <button class="text-xl" title="Change language or currency"><i class="fa fa-globe"></i></button>
+                <button class="text-xl" title="View favorites"><i class="fa fa-heart"></i></button>
+                <button class="text-xl" title="Log in"><i class="fa fa-user"></i> Log in</button>
+                <button class="text-xl md:hidden" title="Open menu"><i class="fa fa-bars"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="bg-[#0d2240] pb-4">
+        <div class="max-w-7xl mx-auto flex space-x-4 px-4">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-full font-semibold shadow">Flights</button>
+            <button class="bg-[#13294b] text-white px-4 py-2 rounded-full font-semibold">Hotels</button>
+            <button class="bg-[#13294b] text-white px-4 py-2 rounded-full font-semibold">Car hire</button>
+        </div>
+    </nav>
+
+    <!-- Hero/Search Section -->
+    <section class="bg-[#0d2240] text-white py-10">
+        <div class="max-w-7xl mx-auto px-4">
+            <h1 class="text-4xl font-bold mb-2">Millions of cheap flights. One simple search.</h1>
+            <div class="flex items-center space-x-2 mb-2">
+                <i class="fa fa-random"></i>
+                <span class="font-semibold">Create a multi-city route</span>
+            </div>
+            <form class="bg-white rounded-xl shadow-lg p-4 flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-2" id="searchForm">
+                <div class="flex-1">
+                    <label class="sr-only" for="from">From</label>
+                    <select id="from" name="from" class="w-full px-4 py-3 rounded-lg border focus:outline-none text-gray-900"></select>
+                </div>
+                <div class="flex items-center justify-center">
+                    <button type="button" class="bg-gray-200 rounded-full p-2 mx-2" title="Swap locations"><i class="fa fa-exchange-alt text-gray-700"></i></button>
+                </div>
+                <div class="flex-1">
+                    <label class="sr-only" for="to">To</label>
+                    <select id="to" name="to" class="w-full px-4 py-3 rounded-lg border focus:outline-none text-gray-900"></select>
+                </div>
+                <div class="flex-1">
+                    <label class="sr-only" for="depart">Depart</label>
+                    <input id="depart" name="depart" type="date" class="w-full px-4 py-3 rounded-lg border focus:outline-none text-gray-900" />
+                </div>
+                <div class="flex-1">
+                    <label class="sr-only" for="return">Return</label>
+                    <input id="return" name="return" type="date" class="w-full px-4 py-3 rounded-lg border focus:outline-none text-gray-900" />
+                </div>
+                <div class="flex-1">
+                    <label class="sr-only" for="travellers">Travellers and cabin class</label>
+                    <input id="travellers" name="travellers" type="text" placeholder="1 Adult, Economy" class="w-full px-4 py-3 rounded-lg border focus:outline-none text-gray-900" />
+                </div>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg ml-2">Search</button>
+            </form>
+            <div class="flex space-x-6 mt-4">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" class="form-checkbox rounded text-blue-600" />
+                    <span>Add nearby airports</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" class="form-checkbox rounded text-blue-600" />
+                    <span>Direct flights</span>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results, Filters, and Features -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Eco-badge Legend -->
+        <div class="eco-legend mb-6">
+            <span><span class="bg-green-100 text-green-700 px-2 py-1 rounded">🌱 Eco</span> <span class="text-gray-600">Lowest CO₂</span></span>
+            <span><span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded">♻️ Moderate</span> <span class="text-gray-600">Medium CO₂</span></span>
+            <span><span class="bg-red-100 text-red-700 px-2 py-1 rounded">⚠️ High</span> <span class="text-gray-600">High CO₂</span></span>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap gap-4 mb-6">
+            <select id="sortBy" class="rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" title="Sort flights by">
+                <option value="price">Sort by Price</option>
+                <option value="eco">Sort by Eco-Friendliness</option>
+                <option value="duration">Sort by Duration</option>
+            </select>
+            <div class="flex items-center space-x-2">
+                <input type="checkbox" id="directFlights" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                <label for="directFlights">Direct Flights Only</label>
+            </div>
+        </div>
+
+        <!-- Flight Results Grid -->
+        <section class="feature-section animate-fade-in-up">
+            <h2 class="text-2xl font-bold mb-2">Flight Results</h2>
+            <p class="text-gray-600 mb-4">Compare flights by price, duration, and eco-friendliness. Eco-badges show the estimated CO₂ emissions for each flight.</p>
+            <div id="results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+                <!-- Flight cards will be rendered here -->
+            </div>
+            <div id="emptyState" class="text-center text-gray-500 hidden">No flights match your filters. Try adjusting your search.</div>
+        </section>
+
+        <!-- Carbon Emissions Chart -->
+        <section class="feature-section animate-fade-in-up">
+            <h2 class="text-2xl font-bold mb-2">CO₂ Emissions Comparison</h2>
+            <p class="text-gray-600 mb-4">See how each route compares in terms of carbon emissions. Lower is greener!</p>
+            <canvas id="carbonChart" height="120"></canvas>
+        </section>
+
+        <!-- Budget Explorer Map -->
+        <section class="feature-section animate-fade-in-up">
+            <h2 class="text-2xl font-bold mb-2">Budget Explorer Map</h2>
+            <p class="text-gray-600 mb-4">Explore the cheapest destinations on the map. Click a pin for price and CO₂ info.</p>
+            <div id="map" class="w-full h-96 rounded-lg shadow"></div>
+        </section>
+
+        <!-- Layover Adventure Planner -->
+        <section class="feature-section animate-fade-in-up">
+            <h2 class="text-2xl font-bold mb-2">Layover Adventure Planner</h2>
+            <p class="text-gray-600 mb-4">Got a long layover? Discover top attractions near your stopover airport.</p>
+            <div id="layoverResults" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Layover suggestions will be rendered here -->
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="main.js"></script>
+</body>
+</html> 
